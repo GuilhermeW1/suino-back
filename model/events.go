@@ -26,7 +26,7 @@ type Event struct {
 	RefEventID  *uint64        `json:"ref_event_id,omitempty"`
 	Description *string        `gorm:"type:text" json:"description,omitempty"`
 	Payload     datatypes.JSON `gorm:"type:jsonb" json:"payload,omitempty"`
-	EventDate   time.Time      `gorm:"not null;index:idx_events_sow_date;index:idx_events_type_date" json:"event_date"`
+	EventDate   time.Time      `gorm:"not null;index:idx_events_sow_date;index:idx_events_type_date" json:"eventDate"`
 
 	CreatedAt time.Time      `json:"created_at"`
 	UpdatedAt time.Time      `json:"updated_at"`
