@@ -56,5 +56,9 @@ func main() {
 		events.GET("/:sowId", eventHandler.GetEventsBySowId)
 	}
 
-	r.Run(":8000")
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "8080" // fallback só pro ambiente local
+	}
+	r.Run(":" + port)
 }
