@@ -2,9 +2,11 @@ package main
 
 import (
 	"log"
+	"os"
 
 	"github.com/GuilhermeW1/backend-suino/api/handler"
 	"github.com/GuilhermeW1/backend-suino/db"
+	"github.com/GuilhermeW1/backend-suino/middleware"
 	"github.com/GuilhermeW1/backend-suino/repository"
 	"github.com/GuilhermeW1/backend-suino/service"
 	"github.com/gin-gonic/gin"
@@ -14,12 +16,14 @@ import (
 func main() {
 	err := godotenv.Load()
 	if err != nil {
-		log.Panic(".env file not found")
+		log.Println(".env file not found")
 	}
 
 	db := db.Init()
 
 	r := gin.Default()
+	r.Use(middleware.APIKeyMiddleware(os.Getenv("API_KEY")))
+	r.Use(middleware.RateLimitMiddleware())
 
 	sowRepo := &repository.SowRepository{DB: db}
 	cycleRepo := &repository.CycleRepository{DB: db}

@@ -25,7 +25,7 @@ func Init() *gorm.DB {
 	if os.Getenv("SKIP_MIGRATIONS") == "true" {
 		log.Println("SKIP_MIGRATIONS=true — pulando reset e AutoMigrate")
 	} else {
-		if os.Getenv("DB_RESET") == "true" {
+		if os.Getenv("DB_RESET") == "true" && os.Getenv("ENV") != "prod" {
 			resetDatabase(database)
 		}
 	}
