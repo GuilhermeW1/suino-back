@@ -21,13 +21,17 @@ func Init() *gorm.DB {
 		log.Fatal("Falha ao conectar no banco de dados:", err)
 	}
 
-	//testes
 	if os.Getenv("SKIP_MIGRATIONS") == "true" {
 		log.Println("SKIP_MIGRATIONS=true — pulando reset e AutoMigrate")
-	} else {
-		if os.Getenv("DB_RESET") == "true" && os.Getenv("ENV") != "prod" {
-			resetDatabase(database)
-		}
+		DB = database
+		return database
+	}
+
+	if os.Getenv("DB_RESET") == "true" && os.Getenv("ENV") == "production" {
+		log.Fatal("DB_RESET=true não pode ser usado em produção — abortando por segurança")
+	}
+	if os.Getenv("DB_RESET") == "true" {
+		resetDatabase(database)
 	}
 
 	err = database.AutoMigrate(
