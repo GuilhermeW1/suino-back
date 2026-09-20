@@ -6,6 +6,7 @@ import (
 	"fmt"
 
 	"github.com/GuilhermeW1/backend-suino/model"
+	"github.com/GuilhermeW1/backend-suino/service/dto"
 	"gorm.io/gorm"
 )
 
@@ -13,10 +14,18 @@ type EventRepository struct {
 	DB *gorm.DB
 }
 
-func (r *EventRepository) FindAllEventsBySowId(ctx context.Context, sowID uint) ([]model.Event, error) {
-	var events []model.Event
+func (r *EventRepository) GetEventsBySowId(ctx context.Context, sowID uint) ([]dto.EventResponseDto, error) {
+	events := make([]dto.EventResponseDto, 0)
 
-	err := r.DB.WithContext(ctx).Where("sow_id = ?", sowID).Find(&events).Error
+	err := r.DB.WithContext(ctx).
+		Model(&model.Event{}).
+		Select("events.*, sows.ear_tag AS sow_ear_tag").
+		Joins("INNER JOIN sows ON sows.id = events.sow_id").
+		Where("events.sow_id = ? AND events.deleted_at IS NULL", sowID).
+		Order("events.event_date DESC").
+		Scan(&events).
+		Error
+
 	if err != nil {
 		return nil, err
 	}
@@ -24,15 +33,23 @@ func (r *EventRepository) FindAllEventsBySowId(ctx context.Context, sowID uint) 
 	return events, nil
 }
 
-func (r *EventRepository) GetAllEvents(ctx context.Context) ([]model.Event, error) {
-	var events []model.Event
+func (r *EventRepository) GetAllEvents(ctx context.Context) ([]dto.EventResponseDto, error) {
+	events := make([]dto.EventResponseDto, 0)
 
-	err := r.DB.WithContext(ctx).Model(&model.Event{}).Find(&events).Error
+	err := r.DB.WithContext(ctx).Debug().Model(&model.Event{}).
+		Select("events.*, sows.ear_tag AS sow_ear_tag").
+		Joins("INNER JOIN sows ON sows.id = events.sow_id").
+		Where("events.deleted_at IS NULL").
+		Order("events.event_date DESC").
+		Scan(&events).
+		Error
+
 	if err != nil {
 		return nil, err
 	}
 
 	return events, nil
+
 }
 
 func (r *EventRepository) CreateEvent(ctx context.Context, event *model.Event) (*model.Event, error) {

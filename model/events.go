@@ -15,7 +15,7 @@ const (
 	EventTypeFarrowing      EventType = "FARROWING"
 	EventTypeWeaning        EventType = "WEANING"
 	EventTypeAbortion       EventType = "ABORTION"
-	EventTypeMedication     EventType = "MEDICATION"
+	EventTypeVaccine        EventType = "VACCINE"
 )
 
 type Event struct {

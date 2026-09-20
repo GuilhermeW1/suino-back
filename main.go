@@ -35,18 +35,21 @@ func main() {
 
 	// sowHandler := &handler.
 
+	//TODO: delete sow isnt changing sow status, and not closing her cycles
 	sows := r.Group("/sows")
 	{
 		sows.POST("/", sowHandler.Create)
 		sows.GET("/:id", sowHandler.GetById)
 		sows.GET("/", sowHandler.GetAllActive)
 		sows.DELETE("/:id", sowHandler.Delete)
+		sows.GET(("/earTag/:earTag"), sowHandler.GetByEarTag)
 	}
 
 	events := r.Group("/events")
 	{
 		events.POST("/", eventHandler.AddEvent)
 		events.GET("/", eventHandler.GetEvents)
+		events.GET("/:sowId", eventHandler.GetEventsBySowId)
 	}
 
 	r.Run(":8000")

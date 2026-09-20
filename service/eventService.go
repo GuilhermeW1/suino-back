@@ -7,6 +7,7 @@ import (
 
 	"github.com/GuilhermeW1/backend-suino/model"
 	"github.com/GuilhermeW1/backend-suino/repository"
+	"github.com/GuilhermeW1/backend-suino/service/dto"
 )
 
 type EventService struct {
@@ -41,8 +42,17 @@ func (s *EventService) AddEvent(ctx context.Context, event *model.Event) (*model
 	return newEvent, nil
 }
 
+func (s *EventService) GetEventsBySowId(ctx context.Context, sowId uint) ([]dto.EventResponseDto, error) {
+	events, err := s.R.GetEventsBySowId(ctx, sowId)
+	if err != nil {
+		return nil, fmt.Errorf("service error: getting event: %w", err)
+	}
+
+	return events, nil
+}
+
 // TODO: fazer
-func (s *EventService) GetEvents(ctx context.Context) ([]model.Event, error) {
+func (s *EventService) GetEvents(ctx context.Context) ([]dto.EventResponseDto, error) {
 	events, err := s.R.GetAllEvents(ctx)
 	if err != nil {
 		return nil, fmt.Errorf("Service error: error getting events: %w", err)

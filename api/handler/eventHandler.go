@@ -2,6 +2,7 @@ package handler
 
 import (
 	"net/http"
+	"strconv"
 
 	"github.com/GuilhermeW1/backend-suino/model"
 	"github.com/GuilhermeW1/backend-suino/service"
@@ -33,6 +34,24 @@ func (h *EventHandler) GetEvents(ctx *gin.Context) {
 	events, err := h.S.GetEvents(ctx)
 	if err != nil {
 		ctx.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
+		return
+	}
+
+	ctx.JSON(http.StatusOK, events)
+}
+
+func (h *EventHandler) GetEventsBySowId(ctx *gin.Context) {
+	sowId := ctx.Param("sowId")
+	intId, err := strconv.ParseInt(sowId, 10, 0)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	events, err := h.S.GetEventsBySowId(ctx, uint(intId))
+	if err != nil {
+		ctx.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
+		return
 	}
 
 	ctx.JSON(http.StatusOK, events)

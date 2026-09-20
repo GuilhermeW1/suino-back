@@ -48,6 +48,19 @@ func (h *SowHandler) GetById(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, sow)
 }
 
+func (h *SowHandler) GetByEarTag(ctx *gin.Context) {
+	earTagParam := ctx.Param("earTag")
+
+	sow, err := h.Service.GetByEarTag(ctx, earTagParam)
+	if err != nil {
+		ctx.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
+		return
+	}
+
+	ctx.JSON(http.StatusOK, sow)
+
+}
+
 func (h *SowHandler) GetAllActive(ctx *gin.Context) {
 	sows, err := h.Service.GetAllActive(ctx)
 	if err != nil {

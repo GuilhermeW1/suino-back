@@ -22,6 +22,16 @@ func (s *SowService) GetById(ctx context.Context, id uint) (*model.Sow, error) {
 	return sow, nil
 }
 
+func (s *SowService) GetByEarTag(ctx context.Context, earTag string) (*model.Sow, error) {
+	sow, err := s.R.FindByEarTag(ctx, earTag)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return sow, nil
+}
+
 func (s *SowService) Create(ctx context.Context, sow *model.Sow) (*model.Sow, error) {
 	err := s.R.Create(ctx, sow)
 	if err != nil {
